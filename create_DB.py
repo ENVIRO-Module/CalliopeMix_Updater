@@ -13,7 +13,7 @@ We're going to import ecoinvent in our new project
 """
 #Spold files here
 
-spold_files = r'D:\datasets'
+spold_files = r'D:\datasets'            #Import spolds from local
 
 # Load biosphere3 and LCIA Methods
 bi.bw2setup()
