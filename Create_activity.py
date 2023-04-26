@@ -1,6 +1,4 @@
-# Copy ecoinvent 3.9 to a new database "my ecoinvent"
-# Create a new activity "future grid mix", which has a single input: wind electricity
-# Replace all electricity inputs in Spanish activities with the new activity
+
 import bw2data as bd
 import pandas as pd
 #set the current project
@@ -16,7 +14,7 @@ ei = bd.Database("CUTOFF")
 print(bd.projects.dir)
 pass
 # create a copy of the database, just in case.
-try:                #If it's not copied yet, it'll take a few minutes
+try:                #it'll take a few minutes
     ei.copy('CUTOFF')
     ei_copy=bd.Database('this_is_a_test')
 except AssertionError:
@@ -29,8 +27,9 @@ df=pd.read_csv('data.csv',delimiter=';')
 
 for index,row in df.iterrows():
     print(row['Product'])
-    #Check if we're creating a new activity
 
+    #Check if we're creating a new activity
+    
     if row['Activity']=='Yes':
         activity_name = str(row['Activity name'])
         print(activity_name)
@@ -50,72 +49,10 @@ for index,row in df.iterrows():
             act=bd.Database('CUTOFF').get(code=row2['Product'])
             exchange=new_activity.new_exchange(input=act,type='technosphere',amount=row2['Amount'])
             exchange.save()
-        #check it worked:
 
+        #check it worked:
         print(list(new_activity.technosphere()))
     else:
         pass
 
-
 pass
-
-
-# Create an activity. Include a code  and name
-
-
-
-
-
-
-"""
-
-try:
-    electro=ei_copy.new_activity(code='THIS IS JUST A TEST',name='TEST_TEST')
-    electro.save()
-except bd.errors.DuplicateNode:
-    pass
-
-"""
-
-
-
-
-
-
-#check in database
-print(bd.projects._get_base_directories())
-
-
-#create a new activity
-
-
-
-
-pass
-"""
-
-ei = bd.Database("cutoff39")
-
-ei.copy("my ecoinvent 2")
-my_ecoinvent = bd.Database("my ecoinvent 2")
-
-# create a new activity
-new_act = my_ecoinvent.new_activity(name="future grid mix", code="future grid mix")
-new_act.save()
-
-electricity_es = my_ecoinvent.get(code='a6fabdc10edd02a7f2a3d8a0e9b3c0a5', name='electricity production, wind, 1-3MW turbine, onshore', location='ES')
-ex = new_act.new_exchange(input=electricity_es, amount=1, type="technosphere")
-ex.save()
-
-elect_medium_voltage = my_ecoinvent.get(code='939fddb10cde1b967a39d939d3502ab8', name='market for electricity, medium voltage', location='ES')
-upstream_exchanges = list(elect_medium_voltage.upstream())
-for ex in upstream_exchanges:
-    if ex.output["location"] == "ES":
-        ex.input = new_act
-        ex.save()
-
-"""
-pass
-
-
-
