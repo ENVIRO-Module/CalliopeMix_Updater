@@ -1,7 +1,8 @@
-Amount;Origin;Activity;Activity name;Product;Name;Input;Unit
-NA;NA;Yes;Contructing materials;NA;NA;NA;NA
-2;GLO;No;market for nickel, class 1;bdb000501800e87c530429d113fb4ade;Nickel;Yes;kg/kW
-0.009;GLO;No;market for acetic anhydride;55a12dd78bf849b7ecc207cc9ca23727;Acetic anhydride;Yes;kg/kW
-0.0267;GLO;No;market for acrylonitrile-butadiene-styrene copolymer;f08ed95bf92b86cec2e66e399b8f4795; acrylonitrile-butadiene-styrene copolymer;Yes;kg/kW
-0.075;GLO;No;market for aluminium, cast alloy;dc45b646e3d62292ae85e6acdf4c1f93;aluminium, cast alloy;Yes;kg/kW
-0.0081;GLO;No;market for aniline;bc6447dabc7d760fd4574fa545b79447;aniline;Yes;kg/kW
+Amount;Origin;Activity;Activity name;Product;Name;Input;Unit;Activity_origin;Code
+NA;NA;Yes;Contructing materials;NA;NA;NA;NA;NA;hy_1
+2;GLO;No;market for nickel, class 1;bdb000501800e87c530429d113fb4ade;Nickel;Yes;kg/kW;Contructing materials;NA
+0.009;GLO;No;market for acetic anhydride;55a12dd78bf849b7ecc207cc9ca23727;Acetic anhydride;Yes;kg/kW;Contructing materials;NA
+0.0267;GLO;No;market for acrylonitrile-butadiene-styrene copolymer;f08ed95bf92b86cec2e66e399b8f4795; acrylonitrile-butadiene-styrene copolymer;Yes;kg/kW;Contructing materials;NA
+0.075;GLO;No;market for aluminium, cast alloy;dc45b646e3d62292ae85e6acdf4c1f93;aluminium, cast alloy;Yes;kg/kW;Contructing materials;NA
+0.0081;GLO;No;market for aniline;bc6447dabc7d760fd4574fa545b79447;aniline;Yes;kg/kW;Contructing materials;NA
+
