@@ -1,4 +1,4 @@
-import bw2data
+
 import bw2io as bi
 import bw2data as bd
 
