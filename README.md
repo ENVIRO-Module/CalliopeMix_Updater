@@ -1,5 +1,8 @@
 # SEEDS_bw
 
+
+#This document is out of date
+
 Create an inventory from a csv. 
 
 Required columns:
