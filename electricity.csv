@@ -1,0 +1,5 @@
+Amount;Location;Activity name;Activity_code;Reference_product;Unit;Activity_origin;Technosphere;Database
+NA;PT;Future market for electricity;f_Elec_SEEDS;electricity production, 2050 in Portugal;kwh;NA;Yes;this_is_a_test
+1;PT;wind_onshore;530d547cc3b41e6c1ffcdd8ec7b6086b;NA;kwh;Future market for electricity;Yes;CUTOFF
+1;PT;wind_offshore;f60ae7433a185071c8c1ea48df57ddee;NA;kwh;Future market for electricity;Yes;CUTOFF
+1;PT;hydro_run_of_river;ee22a241360095cd55e1eb1b2c62c2b8;NA;kwh;Future market for electricity;Yes;CUTOFF
