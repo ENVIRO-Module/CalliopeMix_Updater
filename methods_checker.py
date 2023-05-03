@@ -21,5 +21,9 @@ biosphere=bd.Database('biosphere3')
 #results=[n for n in all_methods if 'GWP' in str(n) and 'ReCiPe' in str(n)]
 
 #check biosphere flows
-oxygen=bd.Database('biosphere3').search('Oxygen)
+#oxygen=bd.Database('biosphere3').search('Oxygen')
+
+
+ox2=bd.Database('biosphere3').get(code='9ec076d9-6d9f-4a0b-9851-730626ed4319')
+
 pass
