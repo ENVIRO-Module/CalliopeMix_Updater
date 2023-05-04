@@ -7,10 +7,14 @@ Create an inventory from a csv.
 
 Required columns:
 * Amount
-* Activity
-* Activity name
-* Poduct --> Ecoinvent name
-* Activity_origin
-* Code: code to save the activity in the database
+* Location 
+* New Activity
+* Activity name --> Necessary for new activities, optional for exchanges
+* Activity_code
+* Reference_product --> include in new activities
+* Activity_origin --> reference to the new activity created (where the exchanges are added)
+* Technosphere --> if "No", biosphere3 will be assumed
+* Database
 
-<img width="733" alt="Example" src="https://user-images.githubusercontent.com/79085248/234557173-9038a589-d57e-4b15-b0c1-2331460d0892.PNG">
+
+<img width="848" alt="Example" src="https://user-images.githubusercontent.com/79085248/236173974-6866a730-9e5a-4fed-8ba5-4c94cbb53997.PNG">
