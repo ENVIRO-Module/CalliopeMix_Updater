@@ -18,30 +18,37 @@ except AssertionError:
     pass
 
 def ModifyBackground(data, activity_code : str):
+    """
+
+    :param data: csv containing the inventory you want to create
+    :param activity_code: db code of the activity that you want to change
+    :return:
+
+    """
+
     #Create a new activity
+
     # We're creating a new market for electricity in 2050
     new_activity_code=InventoryFromExcel(data)
-
     new_activity=ei_copy.get(code=new_activity_code)
     act_to_change=ei_copy.get(code=activity_code)
+
     print('upstream before this function')
     for element in new_activity.upstream():
         print(element)
-    upstream_exchanges=list(act_to_change.upstream())
+
 
     for exchange in act_to_change.upstream():
+        #replace and save
         exchange.input = new_activity
         exchange.save()
+
         print('an exchange has been changed', exchange)
 
-
     print('upstream after the execution of this function')
+
     for element in new_activity.upstream():
         print(element)
-
-
-
-
 
 
 
