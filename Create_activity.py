@@ -7,17 +7,22 @@ bd.projects.set_current("Hydrogen_SEEDS")
 print(bd.projects.dir)
 print(bd.databases)
 #Create an instance of the database of interest
+
+
 ei = bd.Database("CUTOFF")
 # create a copy of the database, just in case.
 try:                #it'll take a few minutes
-    ei.copy('CUTOFF')
+    ei.copy('this_is_a_test')
     ei_copy=bd.Database('this_is_a_test')
+
 except AssertionError:
     ei_copy=bd.Database('this_is_a_test')
     pass
+#bd.Database('this_is_a_test').deregister()
+#bd.Database('test2').rename('this_is_a_test')
 
 def InventoryFromExcel(df):
-
+    starter_time=time.time()
     df.fillna('NA',inplace=True)
     n_processes=len(df.index)
     counter = 0
@@ -67,11 +72,11 @@ def InventoryFromExcel(df):
         else:
            pass
 
-
+    final_time=time.time()
+    final_lap=final_time-starter_time
+    print('Create activity executed in {} seconds'.format(final_lap))
     return(activ)
-df=pd.read_csv('AWE.csv',delimiter=';')
-InventoryFromExcel(df)
-pass
+
 
 
 

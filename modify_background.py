@@ -17,37 +17,31 @@ except AssertionError:
     ei_copy=bd.Database('this_is_a_test')
     pass
 
-
-
-def ModifyBackground(data,activity_code : str,location : str):
+def ModifyBackground(data, activity_code : str):
     #Create a new activity
     # We're creating a new market for electricity in 2050
     new_activity_code=InventoryFromExcel(data)
 
     new_activity=ei_copy.get(code=new_activity_code)
     act_to_change=ei_copy.get(code=activity_code)
-
+    print('upstream before this function')
+    for element in new_activity.upstream():
+        print(element)
     upstream_exchanges=list(act_to_change.upstream())
-    """
-    
-    for exchange in upstream_exchanges:
-        if exchange.output['location']==location:
-            exchange.input=new_activity
-            exchange.save()
-            #check
-            print('an exchange has been changed',exchange)
-"""
-    return upstream_exchanges
 
-electricity_2050=pd.read_csv('electricity.csv',delimiter=';')
+    for exchange in act_to_change.upstream():
+        exchange.input = new_activity
+        exchange.save()
+        print('an exchange has been changed', exchange)
 
-market_for_electricity_2020='f44aa84c22af00eb9a286714b45f50b4'
 
-starter_time=time.time()
-a=ModifyBackground(electricity_2050,market_for_electricity_2020,'PT')
-finish_time=time.time()
+    print('upstream after the execution of this function')
+    for element in new_activity.upstream():
+        print(element)
 
-print('Run time: {}'.format(finish_time-starter_time))
-pass
+
+
+
+
 
 
