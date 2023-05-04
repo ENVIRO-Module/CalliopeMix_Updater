@@ -5,7 +5,6 @@ import time
 
 #set the current project
 
-
 bd.projects.set_current("Hydrogen_SEEDS")
 ei = bd.Database("CUTOFF")
 # create a copy of the database, just in case.
@@ -22,7 +21,7 @@ market_for_electricity_2020='f44aa84c22af00eb9a286714b45f50b4'
 
 starter_time=time.time()
 
-a=ModifyBackground(electricity_2050,market_for_electricity_2020)
+ModifyBackground(electricity_2050,market_for_electricity_2020)
 
 finish_time=time.time()
 
