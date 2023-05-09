@@ -13,5 +13,3 @@ NA;PT;Future market for electricity;f_Elec_SEEDS;electricity production, 2050 in
 1;PT;chp_wte_back_pressure;eb4763f42fdea68db83d49135539bcf8;NA;kwh;Future market for electricity;Yes;CUTOFF
 1;PT;chp_methane_extraction;79aa2a5fabdbf29b9aa415602f4a9a59;NA;kwh;Future market for electricity;Yes;CUTOFF
 1;PT;waste_supply;eb4763f42fdea68db83d49135539bcf8;NA;kwh;Future market for electricity;Yes;CUTOFF
-1;PT;chp_hydrogen;CHP_hydrogen_2050;NA;kwh;Future market for electricity;Yes;CUTOFF
-

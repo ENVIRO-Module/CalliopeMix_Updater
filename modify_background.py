@@ -28,7 +28,7 @@ def ModifyBackground(data, activity_code : str):
 
     #Create a new activity
 
-    # We're creating a new market for electricity in 2050
+    # We're creating a new market for electricity.csv in 2050
     new_activity_code=InventoryFromExcel(data)
     new_activity=ei_copy.get(code=new_activity_code)
     act_to_change=ei_copy.get(code=activity_code)

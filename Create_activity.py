@@ -11,6 +11,8 @@ print(bd.databases)
 
 ei = bd.Database("CUTOFF")
 # create a copy of the database, just in case.
+
+"""
 try:                #it'll take a few minutes
     ei.copy('this_is_a_test')
     ei_copy=bd.Database('this_is_a_test')
@@ -20,9 +22,32 @@ except AssertionError:
     pass
 #bd.Database('this_is_a_test').deregister()
 #bd.Database('test2').rename('this_is_a_test')
+"""
+def InventoryFromExcel(data):
 
-def InventoryFromExcel(df):
+    """
+
+    :param df: can either use a predefined dataframe or a path to a csv
+    :return:
+    """
+
+
     starter_time=time.time()
+    #check
+    if isinstance(data, str):
+        try:
+            df=pd.read_csv(data, delimiter=';')
+        except:
+            print('Error: no path found')
+            return None
+    elif isinstance(data ,pd.DataFrame):
+        df=data
+
+    else:
+        print('Input error')
+        return None
+
+
     df.fillna('NA',inplace=True)
     n_processes=len(df.index)
     counter = 0
@@ -35,13 +60,13 @@ def InventoryFromExcel(df):
             activ.append(activity_code)
 
             try:
-                new_activity = ei_copy.new_activity(name=str(row['Activity name']), code=str(row['Activity_code']))
+                new_activity = ei.new_activity(name=str(row['Activity name']), code=str(row['Activity_code']))
                 new_activity.save()
             # create a df containing the rows
             except bd.errors.DuplicateNode:
-                new_activity = ei_copy.get(code=str(row['Activity_code']))
+                new_activity = ei.get(code=str(row['Activity_code']))
                 new_activity.delete()
-                new_activity = ei_copy.new_activity(name=str(row['Activity name']), code=str(row['Activity_code']))
+                new_activity = ei.new_activity(name=str(row['Activity name']), code=str(row['Activity_code']))
                 new_activity.save()
 
             act_df = df.loc[df['Activity_origin'] == activity_name]
@@ -76,5 +101,6 @@ def InventoryFromExcel(df):
     final_lap=final_time-starter_time
     print('Create activity executed in {} seconds'.format(final_lap))
     return(activ)
+
 
 

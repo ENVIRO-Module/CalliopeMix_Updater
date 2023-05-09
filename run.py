@@ -1,28 +1,68 @@
 from modify_background import ModifyBackground
+from Create_activity import InventoryFromExcel
 import bw2data as bd
 import pandas as pd
 import time
 
-#set the current project
+"""
+Before running enbios, it's necessary to include the activities in the database.
 
+"""
+#select the current project
 bd.projects.set_current("Hydrogen_SEEDS")
 ei = bd.Database("CUTOFF")
-# create a copy of the database, just in case.
-try:                #it'll take a few minutes
-    ei.copy('CUTOFF')
-    ei_copy=bd.Database('this_is_a_test')
-except AssertionError:
-    ei_copy=bd.Database('this_is_a_test')
-    pass
 
-electricity_2050=pd.read_csv(r'Data\electricity.csv',delimiter=';')
+#Create a default electricity_default.csv first
+#This has no hydrogen included, so it won't raise errors
 
-market_for_electricity_2020='f44aa84c22af00eb9a286714b45f50b4'
+InventoryFromExcel(r'Data\electricity_default.csv')
 
-starter_time=time.time()
+#Include the other activities
 
-ModifyBackground(electricity_2050,market_for_electricity_2020)
+InventoryFromExcel(r'Data\AWE.csv')
+InventoryFromExcel(r'Data\PEM.csv')
+InventoryFromExcel(r'Data\Market_for_hydrogen.csv')
 
-finish_time=time.time()
 
-print('Run time: {}'.format(finish_time-starter_time))
+#Create one more activity. This one modifies the inventory of CHP electricity production, replacing natural gas and using hydrogen as an input
+
+chp=ei.get(code='79aa2a5fabdbf29b9aa415602f4a9a59')
+#Create a copy, to avoid problems in the db
+
+
+try:
+    chp_copy=chp.copy(name='CHP_HYDROGEN_2050',code='CHP_hydrogen_2050')
+    chp_copy.save()
+except:
+    chp_copy=ei.get(code='CHP_hydrogen_2050')
+    chp_copy.delete()
+    chp_copy=chp.copy(name='CHP_HYDROGEN_2050',code='CHP_hydrogen_2050')
+    chp_copy.save()
+pass
+
+#import the market for hydrogen
+market_hydrogen=ei.get(code='market_hydrogen_2050_A')
+pass
+#Replace the exchange of intrest
+for ex in chp_copy.technosphere():
+    if ex.input['name'] =='market for natural gas, high pressure':
+        ex.delete()
+        print(ex.input['name'], 'has been deleted')
+        #include market for hydrogen as a new input
+        exchange=chp_copy.new_exchange(input=market_hydrogen, amount=0.036, type='technosphere')
+        exchange.save()
+
+#Now you can create the electricity.csv that includes electricity production with hydrogen technologies
+#~~~~~~~~~~
+"""
+Here is where the loop with enbios is supposed to start
+"""
+#~~~~~~~~~~
+
+#Before creating the inventory, you're supposed to modify the amount of the electricity, matching the amount of the spore
+
+#Replace all the upstream of market for electricity with this new Inventory of electriccity
+
+#With this function you're creating a new inventory for the elctricity production, and using it instead of the Market for electricity in Portugal
+ModifyBackground(r'Data\electricity.csv','f44aa84c22af00eb9a286714b45f50b4')
+#Finally, we should export the DB and use it to run enbios
