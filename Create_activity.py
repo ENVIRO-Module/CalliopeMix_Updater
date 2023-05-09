@@ -29,6 +29,7 @@ def InventoryFromExcel(df):
     activ=[]
     for index,row in df.iterrows():
         if row['Activity_origin'] == 'NA':
+
             activity_name = str(row['Activity name'])
             activity_code=str(row['Activity_code'])
             activ.append(activity_code)
@@ -37,7 +38,6 @@ def InventoryFromExcel(df):
                 new_activity = ei_copy.new_activity(name=str(row['Activity name']), code=str(row['Activity_code']))
                 new_activity.save()
             # create a df containing the rows
-
             except bd.errors.DuplicateNode:
                 new_activity = ei_copy.get(code=str(row['Activity_code']))
                 new_activity.delete()
@@ -76,7 +76,5 @@ def InventoryFromExcel(df):
     final_lap=final_time-starter_time
     print('Create activity executed in {} seconds'.format(final_lap))
     return(activ)
-
-
 
 

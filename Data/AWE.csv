@@ -1,35 +1,41 @@
 Amount;Location;New Activity;Activity name;Activity_code;Reference_product;Unit;Activity_origin;Technosphere;Database
-NA;PT;Yes;Contructing materials;hy_1;Materials per kW, Stack AE;NA;NA;Yes;CUTOFF
-2;GLO;No;market for nickel, class 1;bdb000501800e87c530429d113fb4ade;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.009;GLO;No;market for acetic anhydride;55a12dd78bf849b7ecc207cc9ca23727;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.0267;GLO;No;market for acrylonitrile-butadiene-styrene copolymer;f08ed95bf92b86cec2e66e399b8f4795;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.075;GLO;No;market for aluminium, cast alloy;dc45b646e3d62292ae85e6acdf4c1f93;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.0081;GLO;No;market for aniline;bc6447dabc7d760fd4574fa545b79447;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.13;GLO;No;market for calendering, rigid sheets;cf71deae3cc5a14fd75031aa4b7f9105;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.025;European market;No;market for carbon monoxide;c6279e7065bfcb4faf17f1922152ba20;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.163;Global market;No;market for chromium;da9753836d680dc113c88f94c725da11;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.013;Global market;No;market for tetrafluoroethylene;209119d2367a81e126366fb500b0f2a5;NA;kg/kW;Contructing materials;Yes;CUTOFF
-30;Global market;No;market for steel, unalloyed;69eb25eaae7576f729a84fe002f75949;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.33;Global market;No;market for copper cake;18857d48daf543124335c640c23b2242;NA;kg/kW;Contructing materials;Yes;CUTOFF
-6;PT;No;market for electricity;f44aa84c22af00eb9a286714b45f50b4;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.0717;Global market;No;market for graphite;c4e77656734f018266371189c95d4b86;NA;kg/kW;Contructing materials;Yes;CUTOFF
-0.0217;European market;No;market for hydrochloric acid, without water, in 30% solution state;51f3d92ffbe7ba0d2744a9738e727ca7;NA;kg/kW;Contructing materials;Yes;CUTOFF
-2.67E-05;RER;No;market for industrial machine, heavy, unspecified;628968ad57d65854bf68ac3b1b4df03e;NA;kg/kW;Contructing materials;Yes;CUTOFF
-8.05E-05;Global market;No;market for lubricating oil;49cf76ef64df4af620a10f6cc5f67396;NA;kg/kW;Contructing materials;Yes;CUTOFF
-2.17E-01;Global market;No;market for N-methyl-2-pyrrolidone;082caa7d65ac330a27f63b1ffc4c2639;NA;kg/kW;Contructing materials;Yes;CUTOFF
-5.50E-03;RER w/o RU;No;market for nitric acid, without water, in 50% solution state;b776a87d8fc9584e2069d69c003a7d78;NA;kg/kW;Contructing materials;Yes;CUTOFF
-1.30E-01;Global market;No;market for plaster mixing;afd5b9cb8efdc2abda4421f104a82b26;NA;kg/kW;Contructing materials;Yes;CUTOFF
-5.67E-02;Global market;No;market for polyphenylene sulfide;7371619d39d650372d46692968f33e3c;NA;kg/kW;Contructing materials;Yes;CUTOFF
-4.33E-02;Global market;No;market for polysulfone;7973ec2c9d239b5b3cbd3d605e76087e;NA;kg/kW;Contructing materials;Yes;CUTOFF
-1.47E-02;Global market;No;market for purified terephthalic acid;d2a4010fa635c8939f326c91cf7d6ce6;NA;kg/kW;Contructing materials;Yes;CUTOFF
-1.83E+00;Spain;No;market for water, decarbonised;5fbb8273d50c2acad228f9c99d2b06f9;NA;kg/kW;Contructing materials;Yes;CUTOFF
-1.43E+01;Europe without Switzerland;No;market for water, deionised;150949a42a0ff10542b13bf1ecfbfb29;NA;kg/kW;Contructing materials;Yes;CUTOFF
-1.83E-01;Global market;No;market for zirconium oxide;e6e16e75bdc55cff1911801b71bd6477;NA;kg/kW;Contructing materials;Yes;CUTOFF
-NA;NA;Yes;Operating resources;hy_2;Operating resources per kg H2, AE 1 GW;NA;NA;Yes;CUTOFF
-50;PT;No;market for electricity;f44aa84c22af00eb9a286714b45f50b4;NA;kWh/kg H2;Operating resources;Yes;CUTOFF
-10;Europe without Switzerland;No;market for water, deionised;150949a42a0ff10542b13bf1ecfbfb29;NA;kg/kgH2;Operating resources;Yes;CUTOFF
-0.0025;GLO;No;market for potassium hydroxide;60eaeaa8296325a5136ede2d4d947e34;NA;kg/kgH2;Operating resources;Yes;CUTOFF
-NA;NA;Yes;AE-1GW 2050 (Electrolysis plant);hy_AE_plant_2050;1kg of Hydrogen, 20 bars;NA;NA;Yes;CUTOFF
-1;NA;No;Contructing materials;hy_1;NA;item;AE-1GW 2050 (Electrolysis plant);Yes;this_is_a_test
-1;NA;No;Operating resources;hy_2;NA;item;AE-1GW 2050 (Electrolysis plant);Yes;this_is_a_test
-1;NA;No;Oxygen, air;9ec076d9-6d9f-4a0b-9851-730626ed4319;NA;kg;AE-1GW 2050 (Electrolysis plant);No;CUTOFF
+NA;PT;Yes;Cell Stack Framework;hy_2020_StackFramework;Stack_framework_2020;Item;NA;Yes;NA
+2000;Global market;No;market for copper cake;18857d48daf543124335c640c23b2242;No;kg;Cell Stack Framework;Yes;CUTOFF
+200000;Global market;No;market for steel, unalloyed;69eb25eaae7576f729a84fe002f75949;No;kg;Cell Stack Framework;Yes;CUTOFF
+NA;PT;Yes;Cell;hy_2020_cell;Cell_hy_2020_AWE;Item;NA;Yes;NA
+19000;GLO;No;market for nickel, class 1;bdb000501800e87c530429d113fb4ade;No;kg/kW;Cell;Yes;CUTOFF
+54;GLO;No;market for acetic anhydride;55a12dd78bf849b7ecc207cc9ca23727;No;kg;Cell;Yes;CUTOFF
+160;GLO;No;market for acrylonitrile-butadiene-styrene copolymer;f08ed95bf92b86cec2e66e399b8f4795;No;kg;Cell;Yes;CUTOFF
+450;GLO;No;market for aluminium, cast alloy;dc45b646e3d62292ae85e6acdf4c1f93;No;kg;Cell;Yes;CUTOFF
+49;GLO;No;market for aniline;bc6447dabc7d760fd4574fa545b79447;No;kg;Cell;Yes;CUTOFF
+780;GLO;No;market for calendering, rigid sheets;cf71deae3cc5a14fd75031aa4b7f9105;No;kg;Cell;Yes;CUTOFF
+150;European market;No;market for carbon monoxide;c6279e7065bfcb4faf17f1922152ba20;No;kg;Cell;Yes;CUTOFF
+1100;Global market;No;market for zirconium oxide;e6e16e75bdc55cff1911801b71bd6477;No;kg;Cell;Yes;CUTOFF
+78;Global market;No;market for tetrafluoroethylene;209119d2367a81e126366fb500b0f2a5;No;kg;Cell;Yes;CUTOFF
+340;GLO;No;market for polyphenylene sulfide;7371619d39d650372d46692968f33e3c;No;kg;Cell;Yes;CUTOFF
+260;GLO;No;market for polysulfone;7973ec2c9d239b5b3cbd3d605e76087e;No;kg;Cell;Yes;CUTOFF
+1300;GLO;No;market for N-methyl-2-pyrrolidone;082caa7d65ac330a27f63b1ffc4c2639;No;kg;Cell;Yes;CUTOFF
+54;GLO;No;market for acetic anhydride;55a12dd78bf849b7ecc207cc9ca23727;No;kg;Cell;Yes;CUTOFF
+88;GLO;No;market for purified terephthalic acid;d2a4010fa635c8939f326c91cf7d6ce6;No;kg;Cell;Yes;CUTOFF
+33;RoW;No;market for nitric acid, without water, in 50% solution state;3f1525356098e71b1a924efe77b24c3e;No;kg;Cell;Yes;CUTOFF
+130;RER;No;market for hydrochloric acid, without water, in 30% solution state;51f3d92ffbe7ba0d2744a9738e727ca7;No;kg;Cell;Yes;CUTOFF
+430;GLO;No;market for graphite;c4e77656734f018266371189c95d4b86;No;kg;Cell;Yes;CUTOFF
+0.48;GLO;No;market for lubricating oil;49cf76ef64df4af620a10f6cc5f67396;No;kg;Cell;Yes;CUTOFF
+1100;GLO;No;market for zirconium oxide;e6e16e75bdc55cff1911801b71bd6477;No;kg;Cell;Yes;CUTOFF
+11000;ES;No;market for water, decarbonised;5fbb8273d50c2acad228f9c99d2b06f9;No;kg;Cell;Yes;CUTOFF
+86000;RER;No;market for water, deionised;150949a42a0ff10542b13bf1ecfbfb29;No;kg;Cell;Yes;CUTOFF
+9999.72;PT;No;market for electricity, high voltage;f_Elec_SEEDS;No;kWh;Cell;Yes;this_is_a_test
+88000;Europe without Switzerland;No;market for heat, district or industrial, other than natural gas;40839e8ed34180b5f1dae485fcfccf9e;No;MJ;Cell;Yes;CUTOFF
+700;Europe without Switzerland;No;market for heat, from steam, in chemical industry;ec8137188b6f9f38417b8d5a5ec95bd9;No;MJ;Cell;Yes;CUTOFF
+0.16;RER;No;market for industrial machine, heavy, unspecified;628968ad57d65854bf68ac3b1b4df03e;No;kg;Cell;Yes;CUTOFF
+780;GLO;No;market for plaster mixing;afd5b9cb8efdc2abda4421f104a82b26;No;kg;Cell;Yes;CUTOFF
+NA;PT;Yes;Operating_resources;hy_2020_Operating_resources;Operating resources AWE 2020;Item;NA;Yes;NA
+180;PT;No;market for electricity, high voltage;f_Elec_SEEDS;No;MJ;Operating_resources;Yes;this_is_a_test
+10;RER;No;market for water, deionised;150949a42a0ff10542b13bf1ecfbfb29;No;kg;Operating_resources;Yes;CUTOFF
+0.00029;RER;No;market for nitrogen, liquid;28165f2d59c2fa0de2082698c425f3df;No;kg;Operating_resources;Yes;CUTOFF
+0.0019;GLO;No;market for potassium hydroxide;60eaeaa8296325a5136ede2d4d947e34;No;kg;Operating_resources;Yes;CUTOFF
+0.11;;No;market for steam, in chemical industry;c28586187559f95f6582f956e0c6cff4;No;kg;Operating_resources;Yes;CUTOFF
+NA;PT;Yes;Hydrogen production AWE 2020;AWE_2020_production;1kg of hydrogen;kg;NA;Yes;NA
+5.10E-08;PT;No;Cell Stack Framework;hy_2020_StackFramework;No;kg;Hydrogen production, AWE, 2020;Yes;this_is_a_test
+5.10E-08;PT;No;Cell;hy_2020_cell;No;kg;Hydrogen production, AWE, 2020;Yes;this_is_a_test
+1;PT;No;Operating_resources;hy_2020_Operating_resources;No;NA;Hydrogen production AWE 2020;Yes;this_is_a_test

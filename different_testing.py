@@ -10,7 +10,10 @@ ei_copy = bd.Database("this_is_a_test")
 activity_1=ei_copy.get(code='hy_1')
 exchanges=list(activity_1.exchanges())
 
-
+gas=ei_copy.get(code='ec8137188b6f9f38417b8d5a5ec95bd9')
+print(gas['unit'])
+pass
+""""
 
 #create a random activity
 
@@ -84,3 +87,4 @@ for exchange in activity_1.upstream():
 
 pass
 
+"""
