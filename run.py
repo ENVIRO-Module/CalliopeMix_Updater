@@ -51,6 +51,16 @@ for ex in chp_copy.technosphere():
         #include market for hydrogen as a new input
         exchange=chp_copy.new_exchange(input=market_hydrogen, amount=0.036, type='technosphere')
         exchange.save()
+for bio in chp_copy.biosphere():
+    name=str(bio.input)
+    if "Water" in name and 'air' in name:
+        bio['amount']=0.31133
+        bio.save()
+    else:
+        bio.delete()
+
+for ex in list(chp_copy.biosphere()):
+    print(ex)
 
 #Now you can create the electricity.csv that includes electricity production with hydrogen technologies
 #~~~~~~~~~~
