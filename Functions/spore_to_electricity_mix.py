@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from Filters.constant import 
+from Filters.constant import constant
 
 
 def EnergyMixer(data):

@@ -21,7 +21,9 @@ def InventoryFromExcel(data):
         try:
             df=pd.read_csv(data, delimiter=';')
         except:
+
             print('Error: no path found')
+
             return None
     elif isinstance(data ,pd.DataFrame):
         df=data

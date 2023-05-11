@@ -38,4 +38,4 @@ def ModifyBackground(data, activity_code : str):
     for element in new_activity.upstream():
         print(element)
 
-
+#ModifyBackground(r'C:\Users\altz7\PycharmProjects\p3\Inventory\Outputs\electricity_mix_Inventory_1.csv','f44aa84c22af00eb9a286714b45f50b4')
