@@ -1,0 +1,13 @@
+{
+   "basefile": "C:/Users/altz7/UAB/LIVENlab - SEEDS - _Alex/Hydrogen/base_file_simplified.xlsx",
+
+   "nis_path":"C:/Users/altz7/PycharmProjects/p3/Inventory/Nis_output",
+
+   "csv_electricty_mix" : "C:/Users/altz7/PycharmProjects/p3/Inventory/Outputs",
+
+   "old_market_FElectricity" : "f44aa84c22af00eb9a286714b45f50b4",
+
+   "electricity_inventory" : "C:/Users/altz7/PycharmProjects/p3/Inventory/Data/electricity.csv",
+
+   "caliope_file" : "C:/Users/altz7/PycharmProjects/p3/Inventory/Data/flow_out_sum.csv"
+}

@@ -1,0 +1,16 @@
+Amount;Location;Activity name;Activity_code;Reference_product;Unit;Activity_origin;Technosphere;Database
+NaN;PT;Future market for electricity;f_Elec_SEEDS;electricity production, 2050 in Portugal;kwh;NaN;Yes;CUTOFF
+75.689957146066;PT;wind_onshore;530d547cc3b41e6c1ffcdd8ec7b6086b;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.1976803136797441;PT;wind_offshore;f60ae7433a185071c8c1ea48df57ddee;NaN;kwh;Future market for electricity;Yes;CUTOFF
+2.7016924247666325;PT;hydro_run_of_river;ee22a241360095cd55e1eb1b2c62c2b8;NaN;kwh;Future market for electricity;Yes;CUTOFF
+2.5213866421036815;PT;hydro_reservoir;646364e0589592b04856bb49250b855a;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.029421490940462598;PT;ccgt;b92c013747a941dd4eff9ef94ddd6d9b;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.0934419459264938;PT;chp_biofuel_extraction;46821ba9ba1cbc9c4140befc5b5a38df;NaN;kwh;Future market for electricity;Yes;CUTOFF
+71.99001506258377;PT;open_field_pv;32caeee931f794e1df3c8a16a2b3e3d7;NaN;kwh;Future market for electricity;Yes;CUTOFF
+15.853077857150602;PT;existing_wind;530d547cc3b41e6c1ffcdd8ec7b6086b;NaN;kwh;Future market for electricity;Yes;CUTOFF
+1.498271809261957;PT;existing_pv;32caeee931f794e1df3c8a16a2b3e3d7;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.05045560029344928;PT;roof_mounted_pv;c7d52ffde73e9b1f4f1c45d68d8ba2a6;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.44225020543859306;PT;chp_wte_back_pressure;eb4763f42fdea68db83d49135539bcf8;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.07328752206787101;PT;chp_methane_extraction;79aa2a5fabdbf29b9aa415602f4a9a59;NaN;kwh;Future market for electricity;Yes;CUTOFF
+2.0380193799013506;PT;waste_supply;eb4763f42fdea68db83d49135539bcf8;NaN;kwh;Future market for electricity;Yes;CUTOFF
+0.1324786569501239;PT;chp_hydrogen;CHP_hydrogen_2050;NaN;kwh;Future market for electricity;Yes;CUTOFF
