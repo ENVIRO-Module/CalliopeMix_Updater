@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 import pandas as pd
 from modify_background import ModifyBackground
@@ -5,9 +6,8 @@ import bw2data as bd
 import json
 from typing import Optional
 from bw2data.backends import Activity
-
-
-
+import ast
+import typing
 
 
 bd.projects.set_current("Hydrogen_SEEDS")
@@ -56,7 +56,7 @@ def generate_docs(name: str):
         'name',
         'unit',
         'categories',
-        'activity',
+        'Interface',
         'Processor',
         'method',
     ]
@@ -64,12 +64,12 @@ def generate_docs(name: str):
 
     return nis
 
-def Nis_generator(path):
+def Nis_generator(path: str) -> csv:
 
     """
     This function reads the json file and extracts the path to the multiple electricity mix generated
 
-    :param path: path to the general json file
+    :param path: path to the general json file (str)
     :return: Foder containing the X nis files
     """
 
@@ -126,21 +126,54 @@ def Nis_generator(path):
 
         for _, row in base.iterrows():
             # In the LCI we just comput the results for an amount of 1
-            activity=ei.get(code=row['@EcoinventFilename'])
+            activity = ei.get(code=row['@EcoinventFilename'])
 
-            # TODO: Iterate over methods
             for method in methods:
-                print(method)
-
-                method=eval(method)
                 inventory=export_solved_inventory(activity, method)
-                inventory['Processor']= row['Processor']
-                inventory['method']=method[-1]
+                print(inventory.columns)
+
+                inventory['Processor'] = row['Processor']
+                inventory['method'] = method[-1]
+
+
                 nis=pd.concat([nis,inventory],axis=0)
 
 
-        final_path = path +'/'+'Nis_'+sheet_name + ".xlsx"
-        nis.to_excel(final_path)
+        # Adjust the Interface values to the expected input of enbios
+        nis['categories'] = [ast.literal_eval(element) for element in nis['categories']]
+        nis['categories'] = ['_'.join(element).replace(' ','_').replace('-','_') for element in nis['categories']]
+        nis['Interface'] = nis['name']+'_'+nis['categories']
+        nis['Interface'] = [element.replace(' ', '_').replace(',','_').replace('<','_').replace('<','_').replace('-','_') for element in nis['Interface']]
+
+
+        final_path = path +'/'+'Nis_'+sheet_name + ".csv"
+
+        nis.to_csv(final_path, sep=';', index_label=False)
+
+
+def csv_to_json(nis_file_folder: Path) -> None:
+
+    """
+    Function to adapt the output to the requirements of update_nis_table from enbios
+
+    :param nis_file_folder: folder containing the nis files
+    :return: same files in json to use them in enbios' functions
+    """
+    docs=nis_file_folder.glob('*csv')
+    for nis in docs:
+        with open(nis,'r') as csv_file:
+            csv_data=csv.DictReader(csv_file, delimiter=';')
+            data=[row for row in csv_data]
+            # Write it in json
+
+        nis_to_json_name=str(nis).split('.')[0]
+        nis_to_json_name=f"{nis_to_json_name}.json"
+        with open(nis_to_json_name, "w") as json_file:
+            json.dump(data,json_file,indent=4)
+
+
+
+
 
 
 if __name__=='__main__':
