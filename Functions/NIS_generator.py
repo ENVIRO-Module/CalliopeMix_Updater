@@ -129,15 +129,15 @@ def Nis_generator(path: str) -> csv:
             activity = ei.get(code=row['@EcoinventFilename'])
 
             for method in methods:
-                inventory=export_solved_inventory(activity, method)
-                print(inventory.columns)
 
+                method=eval(method)
+                inventory=export_solved_inventory(activity, method)
+
+                #Assign columns
                 inventory['Processor'] = row['Processor']
                 inventory['method'] = method[-1]
 
-
                 nis=pd.concat([nis,inventory],axis=0)
-
 
         # Adjust the Interface values to the expected input of enbios
         nis['categories'] = [ast.literal_eval(element) for element in nis['categories']]
