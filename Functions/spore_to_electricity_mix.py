@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from Filters.constant import constant
+from Utils_seeds.Filters.constant import constant
 import json
 import os
 
@@ -84,4 +84,4 @@ def energyMixer(json_path):
 
 
 if __name__=='__main__':
-    EnergyMixer(r'C:\Users\altz7\PycharmProjects\p3\Inventory\general.json')
+    energyMixer(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')

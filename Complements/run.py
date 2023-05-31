@@ -1,5 +1,5 @@
 import bw2data as bd
-from Function.NIS_generator import *
+from Functions.NIS_generator import *
 
 
 """

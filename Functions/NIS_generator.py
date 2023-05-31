@@ -1,5 +1,7 @@
 import csv
 from pathlib import Path
+
+import numpy as np
 import pandas as pd
 from modify_background import ModifyBackground
 import bw2data as bd
@@ -36,12 +38,13 @@ def export_solved_inventory(activity: Activity, method: tuple[str, ...],
         amount = array[row, 0]
         data.append((bd.get_activity(key), row, amount))
     data.sort(key=lambda x: abs(x[2]))
+
     df = pd.DataFrame([{
-        'row_index': row,
         'amount': amount,
         'name': flow.get('name'),
         'unit': flow.get('unit'),
-        'categories': str(flow.get('categories'))
+        'categories': str(flow.get('categories')),
+        'ref_product': activity['reference product']
     } for flow, row, amount in data])
     if out_path:
         df.to_excel(out_path)
@@ -51,7 +54,6 @@ def export_solved_inventory(activity: Activity, method: tuple[str, ...],
 
 def generate_docs(name: str):
     columns = [
-        'row_index',
         'amount',
         'name',
         'unit',
@@ -59,6 +61,7 @@ def generate_docs(name: str):
         'Interface',
         'Processor',
         'method',
+        'ref_product'
     ]
     nis=pd.DataFrame(columns=columns)
 
@@ -104,7 +107,6 @@ def Nis_generator(path: str) -> csv:
     # Generate a list of methods
     methods=methods_df['Formula'].tolist()
 
-
     for file in files:
         file_path=str(file)
         num_spore=file_path.split('_')[-1].split('.')[0]
@@ -113,10 +115,6 @@ def Nis_generator(path: str) -> csv:
         # Modify the background of the database
         # We still want to replace the market for electricity
         ModifyBackground(file_path,market_for_electricity)
-        #Read the Excel file
-        # TODO: a general yaml with the path of different files and folders
-        # TODO: revisar on posar-ho
-        # load the path file (json)
 
         print(base.head())
 
@@ -127,28 +125,51 @@ def Nis_generator(path: str) -> csv:
         for _, row in base.iterrows():
             # In the LCI we just comput the results for an amount of 1
             activity = ei.get(code=row['@EcoinventFilename'])
+            method=methods[0]
+            method=eval(method)
+            inventory=export_solved_inventory(activity,method)
 
-            for method in methods:
+            #Assign columns
+            inventory['Processor'] = row['Processor']
+            inventory['method'] = method[-1]
+            has_float_values = inventory['categories'].dtype == float and nis['categories'].apply(
+                lambda x: isinstance(x, float)).any()
+            print(has_float_values)
+            list_types=[type(element) for element in inventory['categories']]
+            list_types=set(list_types)
+            print(inventory['categories'][0], list_types)
 
-                method=eval(method)
-                inventory=export_solved_inventory(activity, method)
 
-                #Assign columns
-                inventory['Processor'] = row['Processor']
-                inventory['method'] = method[-1]
 
-                nis=pd.concat([nis,inventory],axis=0)
+            nis=pd.concat([nis,inventory],axis=0)
+            print(nis.head())
 
         # Adjust the Interface values to the expected input of enbios
+
+
         nis['categories'] = [ast.literal_eval(element) for element in nis['categories']]
-        nis['categories'] = ['_'.join(element).replace(' ','_').replace('-','_') for element in nis['categories']]
-        nis['Interface'] = nis['name']+'_'+nis['categories']
-        nis['Interface'] = [element.replace(' ', '_').replace(',','_').replace('<','_').replace('<','_').replace('-','_') for element in nis['Interface']]
+        nis['categories'] = ['_'.join(element).replace(' ', '_').replace('-', '_') for element in nis['categories']]
+        nis['Interface'] = nis['name'] + '_' + nis['categories']
+        nis['Interface'] = [element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['Interface']]
+
+        previous=None
+        for index,row  in nis.iterrows():
+
+            if row['ref_product'] != previous:
+                new_row=pd.Series('',index=nis.columns)
+                new_row['name']=row['ref_product']
+                nis = nis.iloc[:index].append(new_row, ignore_index=True).append(nis.iloc[index:], ignore_index=True)
+            break
+            previous = row['ref_product']
+
+
+
+
 
 
         final_path = path +'/'+'Nis_'+sheet_name + ".csv"
 
-        nis.to_csv(final_path, sep=';', index_label=False)
+        nis.to_csv(final_path, sep=';', index=False)
 
 
 def csv_to_json(nis_file_folder: Path) -> None:
@@ -161,6 +182,8 @@ def csv_to_json(nis_file_folder: Path) -> None:
     """
     docs=nis_file_folder.glob('*csv')
     for nis in docs:
+        doc=pd.read_csv(nis, delimiter=';')
+        doc.groupby('Processor')
         with open(nis,'r') as csv_file:
             csv_data=csv.DictReader(csv_file, delimiter=';')
             data=[row for row in csv_data]
@@ -177,4 +200,5 @@ def csv_to_json(nis_file_folder: Path) -> None:
 
 
 if __name__=='__main__':
-    Nis_generator(r'C:\Users\altz7\PycharmProjects\p3\Inventory\general.json')
+    Nis_generator(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')
+
