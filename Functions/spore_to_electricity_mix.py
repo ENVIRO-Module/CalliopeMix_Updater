@@ -1,12 +1,13 @@
 import pandas as pd
 import time
-from Utils_seeds.Filters.constant import constant
 import json
 import os
 
 def export_constant(json_file):
     """
     This functions returns a file with a list of the existing technologies in the electricity mix
+    It reads the electricity.csv file, a "default file" that the user has to create to include the new activities there
+
 
     :param json: base json file with paths and links
     :return list of existing technologies
@@ -24,10 +25,12 @@ def export_constant(json_file):
 
     # Ruta completa del archivo de salida
     output_path = os.path.join(current_directory, output_filename)
-
+    df.dropna(inplace=True,subset=['Amount'] ,axis=0)
     constant=[]
     for _,element in df.iterrows():
-        if element['Amount'] !='NA':
+        instance=isinstance(element['Amount'], float)
+        if instance is True:
+            print('element not equal to NA is', element['Amount'])
             technology = element['Activity name']
             constant.append(technology)
         else:
@@ -41,6 +44,13 @@ def export_constant(json_file):
 
 
 def energyMixer(json_path):
+    """
+
+    :param json_path: path of the general json
+    :return: Returns as much csv as spores, containing the electricity mix of each of them.
+    These csv follow the general structure of the inventory form excel function
+
+    """
 
     with open(json_path) as reader:
         file = json.load(reader)
@@ -84,4 +94,5 @@ def energyMixer(json_path):
 
 
 if __name__=='__main__':
+    export_constant(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')
     energyMixer(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')

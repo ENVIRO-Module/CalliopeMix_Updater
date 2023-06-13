@@ -44,7 +44,8 @@ def export_solved_inventory(activity: Activity, method: tuple[str, ...],
         'name': flow.get('name'),
         'unit': flow.get('unit'),
         'categories': str(flow.get('categories')),
-        'ref_product': activity['reference product']
+        'ref_product': activity['reference product'],
+        'act_name':activity['name']
     } for flow, row, amount in data])
     if out_path:
         df.to_excel(out_path)
@@ -61,7 +62,8 @@ def generate_docs(name: str):
         'Interface',
         'Processor',
         'method',
-        'ref_product'
+        'ref_product',
+        'act_name'
     ]
     nis=pd.DataFrame(columns=columns)
 
@@ -73,7 +75,7 @@ def Nis_generator(path: str) -> csv:
     This function reads the json file and extracts the path to the multiple electricity mix generated
 
     :param path: path to the general json file (str)
-    :return: Foder containing the X nis files
+    :return: Folder containing the X nis files
     """
 
     with open(path) as path_reference:
@@ -114,6 +116,7 @@ def Nis_generator(path: str) -> csv:
 
         # Modify the background of the database
         # We still want to replace the market for electricity
+
         ModifyBackground(file_path,market_for_electricity)
 
         print(base.head())
@@ -128,7 +131,6 @@ def Nis_generator(path: str) -> csv:
             method=methods[0]
             method=eval(method)
             inventory=export_solved_inventory(activity,method)
-
             #Assign columns
             inventory['Processor'] = row['Processor']
             inventory['method'] = method[-1]
@@ -139,8 +141,6 @@ def Nis_generator(path: str) -> csv:
             list_types=set(list_types)
             print(inventory['categories'][0], list_types)
 
-
-
             nis=pd.concat([nis,inventory],axis=0)
             print(nis.head())
 
@@ -149,7 +149,23 @@ def Nis_generator(path: str) -> csv:
 
         nis['categories'] = [ast.literal_eval(element) for element in nis['categories']]
         nis['categories'] = ['_'.join(element).replace(' ', '_').replace('-', '_') for element in nis['categories']]
-        nis['Interface'] = nis['name'] + '_' + nis['categories']
+
+        # Create an "Unspecified"
+        interfaces=[]
+        for name,category in zip(nis['name'],nis['categories']):
+            count=category.count('_')
+            if count <1:
+                category=str(category)+'_unspecified'
+                category=name+'_'+category
+                interfaces.append(category)
+            else:
+                cat=name+'_'+category
+                interfaces.append(cat)
+
+        nis['Interface']=interfaces
+
+
+        #nis['Interface'] = nis['name'] + '_' + nis['categories']
         nis['Interface'] = [element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['Interface']]
 
         previous=None
@@ -157,19 +173,14 @@ def Nis_generator(path: str) -> csv:
 
             if row['ref_product'] != previous:
                 new_row=pd.Series('',index=nis.columns)
-                new_row['name']=row['ref_product']
+                new_row['amount']= 1
                 nis = nis.iloc[:index].append(new_row, ignore_index=True).append(nis.iloc[index:], ignore_index=True)
             break
             previous = row['ref_product']
 
-
-
-
-
-
         final_path = path +'/'+'Nis_'+sheet_name + ".csv"
 
-        nis.to_csv(final_path, sep=';', index=False)
+        nis.to_csv(final_path, sep=',', index=False)
 
 
 def csv_to_json(nis_file_folder: Path) -> None:

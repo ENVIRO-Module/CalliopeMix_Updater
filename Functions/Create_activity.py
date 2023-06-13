@@ -7,14 +7,10 @@ ei = bd.Database("CUTOFF")
 
 
 def InventoryFromExcel(data):
-
     """
-
     :param df: can either use a predefined dataframe or a path to a csv
     :return:
     """
-
-
     starter_time=time.time()
     #check
     if isinstance(data, str):
@@ -31,7 +27,6 @@ def InventoryFromExcel(data):
     else:
         print('Input error')
         return None
-
 
     df.fillna('NA',inplace=True)
     n_processes=len(df.index)

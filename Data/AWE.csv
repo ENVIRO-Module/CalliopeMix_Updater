@@ -30,12 +30,12 @@ NA;PT;Yes;Cell;hy_2020_cell;Cell_hy_2020_AWE;Item;NA;Yes;NA
 0.16;RER;No;market for industrial machine, heavy, unspecified;628968ad57d65854bf68ac3b1b4df03e;No;kg;Cell;Yes;CUTOFF
 780;GLO;No;market for plaster mixing;afd5b9cb8efdc2abda4421f104a82b26;No;kg;Cell;Yes;CUTOFF
 NA;PT;Yes;Operating_resources;hy_2020_Operating_resources;Operating resources AWE 2020;Item;NA;Yes;NA
-180;PT;No;market for electricity, high voltage;f_Elec_SEEDS;No;MJ;Operating_resources;Yes;CUTOFF
+180;PT;No;market for electricity, high voltage;f44aa84c22af00eb9a286714b45f50b4;No;MJ;Operating_resources;Yes;CUTOFF
 10;RER;No;market for water, deionised;150949a42a0ff10542b13bf1ecfbfb29;No;kg;Operating_resources;Yes;CUTOFF
 0.00029;RER;No;market for nitrogen, liquid;28165f2d59c2fa0de2082698c425f3df;No;kg;Operating_resources;Yes;CUTOFF
 0.0019;GLO;No;market for potassium hydroxide;60eaeaa8296325a5136ede2d4d947e34;No;kg;Operating_resources;Yes;CUTOFF
 0.11;;No;market for steam, in chemical industry;c28586187559f95f6582f956e0c6cff4;No;kg;Operating_resources;Yes;CUTOFF
 NA;PT;Yes;Hydrogen production AWE 2020;AWE_2020_production;1kg of hydrogen;kg;NA;Yes;NA
-5.10E-08;PT;No;Cell Stack Framework;hy_2020_StackFramework;No;kg;Hydrogen production, AWE, 2020;Yes;CUTOFF
-5.10E-08;PT;No;Cell;hy_2020_cell;No;kg;Hydrogen production, AWE, 2020;Yes;CUTOFF
+5.10E-08;PT;No;Cell Stack Framework;hy_2020_StackFramework;No;kg;Hydrogen production AWE 2020;Yes;CUTOFF
+5.10E-08;PT;No;Cell;hy_2020_cell;No;kg;Hydrogen production AWE 2020;Yes;CUTOFF
 1;PT;No;Operating_resources;hy_2020_Operating_resources;No;NA;Hydrogen production AWE 2020;Yes;CUTOFF

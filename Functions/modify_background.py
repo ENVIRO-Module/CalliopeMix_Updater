@@ -10,10 +10,11 @@ def ModifyBackground(data, activity_code : str):
     """
 
     :param data: csv containing the inventory you want to create
-    :param activity_code: db code of the activity that you want to change
+    :param activity_code: db code of the activity you want to change // replace
     :return:
-
     """
+
+
    #Create a new activity
 
     # We're creating a new market for electricity.csv in 2050

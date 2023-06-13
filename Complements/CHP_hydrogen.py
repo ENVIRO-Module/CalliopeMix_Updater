@@ -48,19 +48,19 @@ except:
     chp_copy.save()
 
 
-#import the market for hydrogen
+# Import the market for hydrogen
 market_hydrogen=ei_copy.get(code='market_hydrogen_2050_A')
-pass
-#Replace the exchange of intrest
+
+# Replace the exchange of intrest
 for ex in chp_copy.technosphere():
     if ex.input['name'] =='market for natural gas, high pressure':
         ex.delete()
         print(ex.input['name'], 'has been deleted')
-        #include market for hydrogen as a new input
+        # Include market for hydrogen as a new input
         exchange=chp_copy.new_exchange(input=market_hydrogen, amount=0.036, type='technosphere')
         exchange.save()
 
-#Remove the biosphere flows of the operation and
+# Remove the biosphere flows of the operation and include stoichiometric water vapor
 
 for bio in chp_copy.biosphere():
     name=str(bio.input)
