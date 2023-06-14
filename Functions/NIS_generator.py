@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-
+from Utils_seeds.const.const import BASE_DATA_PATH
 import numpy as np
 import pandas as pd
 from modify_background import ModifyBackground
@@ -14,6 +14,8 @@ import typing
 
 bd.projects.set_current("Hydrogen_SEEDS")
 ei = bd.Database("CUTOFF")
+
+
 
 
 def export_solved_inventory(activity: Activity, method: tuple[str, ...],
@@ -53,6 +55,7 @@ def export_solved_inventory(activity: Activity, method: tuple[str, ...],
 
 
 
+
 def generate_docs(name: str):
     columns = [
         'amount',
@@ -68,6 +71,89 @@ def generate_docs(name: str):
     nis=pd.DataFrame(columns=columns)
 
     return nis
+
+
+def generate_colum_names():
+    "copy the bare processor sheet from the original NIS file"
+    columns=[
+        "ProcessorGroup",
+        "Processor",
+        "ParentProcessor",
+        "SubsystemType",
+        "System",
+        "FunctionalOrStructural",
+        "Accounted Stock",
+        "Description",
+        "GeolocationRef",
+        "GeolocationCode",
+        "GeolocationLatLong",
+        "Attributes",
+        "@EcoinventName",
+        "@EcoinventFilename",
+        "@EcoinventCarrierName",
+        "@region"]
+    bare_processor=pd.DataFrame(columns=columns)
+    return bare_processor
+
+
+def generate_bare_processor(path: str)->pd.DataFrame:
+
+    """
+    This function creates an excel with one sheet, following the bareProcessor structure of the nis file.
+    It runs only one simulation
+    :param path:
+    :return:
+    """
+    with open(path) as path_reference:
+        dict_path = json.load(path_reference)
+        print(dict_path)
+
+    #load the bare processor simulation sheet
+    base = pd.read_excel(dict_path['basefile'], sheet_name='BareProcessors simulation')
+
+    # Extract and create columns.
+    # Fist, focus on the columns that can directly be copied from the base file
+    bare_processor=generate_colum_names()
+    # Include the generated columns
+    bare_processor['ProcessorGroup']=base.get('ProcessorGroup')
+    bare_processor['FunctionalOrStructural']=base.get('FunctionalOrStructural')
+    bare_processor['Accounted']=base.get('Accounted')
+    bare_processor['@EcoinventFilename']=base.get('@EcoinventFilename')
+    bare_processor['@EcoinventCarrierName']=base.get('@EcoinventCarrierName')
+
+    # Get the names from the inventories
+    # Since we're not able to read the lci spodls, we will read the data from the electricity mix inventories using bw.
+
+    #Open the folder containing the cas files and select the first
+
+    object_path=Path(dict_path['csv_electricty_mix'])
+    files = list(object_path.glob('*.csv'))[0] # get the first. We're only interested on generating an example
+    example=pd.read_csv(files, delimiter=';')
+    names_codes={name:code for name,code in zip(example['Activity name'],example['Activity_code'])}
+
+    # Iterate over the activities in the base file. If the activity is in the dicitonary, extract the name of the spold
+    # Store them in a dictionary
+    activities=base.get('Processor')
+    name_inventory={}
+    for act in activities:
+        for name in names_codes:
+            if act==name:
+                code=names_codes[name]
+                code=ei.get(code)
+                inventory_name=code['name']
+                name_inventory[act]=inventory_name
+
+    bare_processor['@EcoinventName']=list(name_inventory.values())
+    #Modify it to generate the processor names
+
+    processors=[element.replace(' ','_').replace(',', '_') for element in list(name_inventory.values())]
+    bare_processor['Processor']=processors
+    bare_processor.to_csv(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general_nis.csv', sep=';', index=False)
+
+    return bare_processor
+pass
+
+
 
 def Nis_generator(path: str) -> csv:
 
@@ -154,6 +240,13 @@ def Nis_generator(path: str) -> csv:
         interfaces=[]
         for name,category in zip(nis['name'],nis['categories']):
             count=category.count('_')
+            # TODO: Check if the value starts by a number
+            name_check=name[0]
+
+            if name_check.isnumeric():
+                # If starts with a number, add a "_" in front of the sting
+                name='_'+name
+
             if count <1:
                 category=str(category)+'_unspecified'
                 category=name+'_'+category
@@ -163,10 +256,8 @@ def Nis_generator(path: str) -> csv:
                 interfaces.append(cat)
 
         nis['Interface']=interfaces
-
-
-        #nis['Interface'] = nis['name'] + '_' + nis['categories']
         nis['Interface'] = [element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['Interface']]
+
 
         previous=None
         for index,row  in nis.iterrows():
@@ -178,38 +269,27 @@ def Nis_generator(path: str) -> csv:
             break
             previous = row['ref_product']
 
-        final_path = path +'/'+'Nis_'+sheet_name + ".csv"
+
+        final_path = path +'/'+'Nis_'+sheet_name+'.xlsx'
+
+        # Create an excel file containing 2 sheets:
+        writer=pd.ExcelWriter(final_path,engine='xlsxwriter')
+        bare_processor = generate_bare_processor(BASE_DATA_PATH)
+        bare_processor.to_excel(final_path,sheet_name='BareProcessors',index=False)
+        nis.to_excel(writer,sheet_name='Interfaces', index=False)
+        writer.close()
+        final_path_csv=path +'/'+'Nis_'+sheet_name+'.csv'
+
 
         nis.to_csv(final_path, sep=',', index=False)
 
 
-def csv_to_json(nis_file_folder: Path) -> None:
-
-    """
-    Function to adapt the output to the requirements of update_nis_table from enbios
-
-    :param nis_file_folder: folder containing the nis files
-    :return: same files in json to use them in enbios' functions
-    """
-    docs=nis_file_folder.glob('*csv')
-    for nis in docs:
-        doc=pd.read_csv(nis, delimiter=';')
-        doc.groupby('Processor')
-        with open(nis,'r') as csv_file:
-            csv_data=csv.DictReader(csv_file, delimiter=';')
-            data=[row for row in csv_data]
-            # Write it in json
-
-        nis_to_json_name=str(nis).split('.')[0]
-        nis_to_json_name=f"{nis_to_json_name}.json"
-        with open(nis_to_json_name, "w") as json_file:
-            json.dump(data,json_file,indent=4)
 
 
 
-
+########################################################Supplemetary
 
 
 if __name__=='__main__':
-    Nis_generator(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')
+    Nis_generator(BASE_DATA_PATH)
 
