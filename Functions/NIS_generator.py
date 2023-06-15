@@ -74,7 +74,7 @@ def generate_docs(name: str):
 
 
 def generate_colum_names():
-    "copy the bare processor sheet from the original NIS file"
+    #"copy the bare processor sheet from the original NIS file"
     columns=[
         "ProcessorGroup",
         "Processor",
@@ -95,6 +95,32 @@ def generate_colum_names():
     bare_processor=pd.DataFrame(columns=columns)
     return bare_processor
 
+def interface_columns():
+    # General structure of the NIS file
+    cols=["Processor",
+    "InterfaceType",
+    "Interface",
+    "Sphere",
+    "RoegenType",
+    "Orientation",
+    "OppositeSubsystemType",
+    "GeolocationRef",
+    "GeolocationCode2",
+    "I@compartment",
+    "I@subcompartment"
+    "Value",
+    "Unit",
+    "RelativeTo",
+    "Uncertainty",
+    "Assessment",
+    "PedigreeMatrix",
+    "Pedigree",
+    "Time",
+    "Source",
+    "NumberAttributes",
+    "Comments"]
+    nis_structure=pd.DataFrame(columns=cols)
+    return nis_structure
 
 def generate_bare_processor(path: str)->pd.DataFrame:
 
@@ -146,7 +172,7 @@ def generate_bare_processor(path: str)->pd.DataFrame:
     bare_processor['@EcoinventName']=list(name_inventory.values())
     #Modify it to generate the processor names
 
-    processors=[element.replace(' ','_').replace(',', '_') for element in list(name_inventory.values())]
+    processors=[element.replace(' ','_').replace(',', '_') .replace('-','_')for element in list(name_inventory.values())]
     bare_processor['Processor']=processors
     bare_processor.to_csv(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general_nis.csv', sep=';', index=False)
 
@@ -219,6 +245,7 @@ def Nis_generator(path: str) -> csv:
             inventory=export_solved_inventory(activity,method)
             #Assign columns
             inventory['Processor'] = row['Processor']
+
             inventory['method'] = method[-1]
             has_float_values = inventory['categories'].dtype == float and nis['categories'].apply(
                 lambda x: isinstance(x, float)).any()
@@ -240,7 +267,7 @@ def Nis_generator(path: str) -> csv:
         interfaces=[]
         for name,category in zip(nis['name'],nis['categories']):
             count=category.count('_')
-            
+
             name_check=name[0]
 
             if name_check.isnumeric():
@@ -257,17 +284,42 @@ def Nis_generator(path: str) -> csv:
 
         nis['Interface']=interfaces
         nis['Interface'] = [element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['Interface']]
+        nis['Orientation']='Input' # as default
+        nis['Compartment']=[compartment.split('_')[0] for compartment in nis['categories']]
+        nis['ref_prod']=[element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['ref_prod']]
 
 
-        previous=None
+        previous_prod=None
+        previous_processor=None
         for index,row  in nis.iterrows():
-
             if row['ref_product'] != previous:
                 new_row=pd.Series('',index=nis.columns)
+                new_row['Processor']=nis.iloc[index + 1]['Processor'] #value of the next row
+                new_row['ref_prod']=(row['ref_product'])
                 new_row['amount']= 1
+                new_row['Orientation']='Output'
                 nis = nis.iloc[:index].append(new_row, ignore_index=True).append(nis.iloc[index:], ignore_index=True)
             break
             previous = row['ref_product']
+            previous_processor
+
+
+        # Finally, use the structure of an original NIS file
+        # Include the generated columns in the nis file
+        Interface_nis=interface_columns()
+        # Copy and move columns
+        Interface_nis['Interface']=nis.get('Interface')
+        Interface_nis['Orientation']=nis.get('Orientation')
+        Interface_nis['I@compartmen']=nis.get('Compartment')
+        Interface_nis['Value']=nis.get('Amount')
+        Interface_nis['Processor'] = [element.replace(' ', '_').replace(',', '_').replace('-', '_') for element in nis['act_name']]
+        Interface_nis['RelativeTo']=[element.replace(' ', '_').replace(',', '_').replace('-', '_') for element in nis['ref_product']]
+        #TODO : Interface types. Follow from here
+        #Interface_nis['InterfaceType']
+
+
+
+
 
 
         final_path = path +'/'+'Nis_'+sheet_name+'.xlsx'
@@ -277,6 +329,7 @@ def Nis_generator(path: str) -> csv:
         bare_processor = generate_bare_processor(BASE_DATA_PATH)
         bare_processor.to_excel(writer,sheet_name='BareProcessors',index=False)
         nis.to_excel(writer,sheet_name='Interfaces', index=False)
+        Interface_nis.to_excel(writer,sheet_name='Test',index=False)
         writer.save()
         writer.close()
         final_path_csv=path +'/'+'Nis_'+sheet_name+'.csv'
