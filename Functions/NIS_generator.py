@@ -240,7 +240,7 @@ def Nis_generator(path: str) -> csv:
         interfaces=[]
         for name,category in zip(nis['name'],nis['categories']):
             count=category.count('_')
-            # TODO: Check if the value starts by a number
+            
             name_check=name[0]
 
             if name_check.isnumeric():
@@ -273,15 +273,16 @@ def Nis_generator(path: str) -> csv:
         final_path = path +'/'+'Nis_'+sheet_name+'.xlsx'
 
         # Create an excel file containing 2 sheets:
-        writer=pd.ExcelWriter(final_path,engine='xlsxwriter')
+        writer=pd.ExcelWriter(final_path,engine='xlsxwriter', options={'strings_to_numbers':True})
         bare_processor = generate_bare_processor(BASE_DATA_PATH)
-        bare_processor.to_excel(final_path,sheet_name='BareProcessors',index=False)
+        bare_processor.to_excel(writer,sheet_name='BareProcessors',index=False)
         nis.to_excel(writer,sheet_name='Interfaces', index=False)
+        writer.save()
         writer.close()
         final_path_csv=path +'/'+'Nis_'+sheet_name+'.csv'
 
 
-        nis.to_csv(final_path, sep=',', index=False)
+        nis.to_csv(final_path_csv, sep=',', index=False)
 
 
 
