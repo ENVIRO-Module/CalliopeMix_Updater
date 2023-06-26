@@ -9,5 +9,7 @@
 
    "electricity_inventory" : "C:/Users/altz7/PycharmProjects/p3/Utils_seeds/Data/electricity.csv",
 
-   "caliope_file" : "C:/Users/altz7/PycharmProjects/p3/Utils_seeds/Data/flow_out_sum.csv"
+   "caliope_file" : "C:/Users/altz7/PycharmProjects/p3/Utils_seeds/Data/flow_out_sum.csv",
+
+   "basefile_enbios": "C:/Users/altz7/Downloads/Base_simplified_forTestt.xlsx"
 }

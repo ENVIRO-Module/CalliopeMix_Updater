@@ -1,7 +1,6 @@
 import csv
 from pathlib import Path
-from Utils_seeds.const.const import BASE_DATA_PATH
-import numpy as np
+from Utils_seeds.const.const import BASE_DATA_PATH, PROJECT_PATH
 import pandas as pd
 from modify_background import ModifyBackground
 import bw2data as bd
@@ -54,6 +53,25 @@ def export_solved_inventory(activity: Activity, method: tuple[str, ...],
     return df
 
 
+def str_cleaner(element :str):
+
+    """
+    This function reads a string and applies different replacement in order to match the expected values from ENBIOS
+
+    """
+    element_clean=element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_').replace('/','_').replace('.','_').replace('(','_').replace(')','_').replace('%','_')
+    return element_clean
+
+def num_cleaner(element: str):
+
+
+    val=str(element)[0]
+    if val.isnumeric():
+        value = '_' + str(element)
+    else:
+        value=element
+    return value
+
 
 
 def generate_docs(name: str):
@@ -69,7 +87,6 @@ def generate_docs(name: str):
         'act_name'
     ]
     nis=pd.DataFrame(columns=columns)
-
     return nis
 
 
@@ -107,7 +124,7 @@ def interface_columns():
     "GeolocationRef",
     "GeolocationCode2",
     "I@compartment",
-    "I@subcompartment"
+    "I@subcompartment",
     "Value",
     "Unit",
     "RelativeTo",
@@ -121,6 +138,42 @@ def interface_columns():
     "Comments"]
     nis_structure=pd.DataFrame(columns=cols)
     return nis_structure
+
+def interfaceTypeSheet():
+
+    cols=["InterfaceTypeHierarchy",
+    "InterfaceType",
+    "Sphere",
+    "RoegenType",
+    "ParentInterfaceType",
+    "Formula",
+    "Description",
+    "Unit",
+    "OppositeSubsystemType",
+    "Attributes",
+    "@EcoinventName"]
+
+    interfaceTypeSheet=pd.DataFrame(columns=cols)
+
+    a = bd.Database('biosphere3')
+
+    # Obtener todos los flujos de biosfera en "biosphere3"
+    interfaceTypeSheet['InterfaceType'] = list(set([act['name'] for act in a]))
+    interfaceTypeSheet['@EcoinventName'] = interfaceTypeSheet['InterfaceType']
+    interfaceTypeSheet['InterfaceType']=interfaceTypeSheet['InterfaceType'].apply(str_cleaner)
+    interfaceTypeSheet['InterfaceType']=interfaceTypeSheet['InterfaceType'].apply(num_cleaner)
+    interfaceTypeSheet['InterfaceTypeHierarchy']='LCI'
+    interfaceTypeSheet['Sphere']='Biosphere'
+    interfaceTypeSheet['RoegenType']='Flow'
+    interfaceTypeSheet['Unit']='kg'    # TODO: implement
+    interfaceTypeSheet['OppositeSubsystemType']='Environment'
+
+
+    return interfaceTypeSheet
+
+
+
+
 
 def generate_bare_processor(path: str)->pd.DataFrame:
 
@@ -136,7 +189,10 @@ def generate_bare_processor(path: str)->pd.DataFrame:
 
     #load the bare processor simulation sheet
     base = pd.read_excel(dict_path['basefile'], sheet_name='BareProcessors simulation')
+    base_copied=pd.read_excel(dict_path['basefile_enbios'],sheet_name='BareProcessors simulation')
 
+
+    pass
     # Extract and create columns.
     # Fist, focus on the columns that can directly be copied from the base file
     bare_processor=generate_colum_names()
@@ -144,7 +200,7 @@ def generate_bare_processor(path: str)->pd.DataFrame:
     bare_processor['ProcessorGroup']=base.get('ProcessorGroup')
     bare_processor['FunctionalOrStructural']=base.get('FunctionalOrStructural')
     bare_processor['Accounted']=base.get('Accounted')
-    bare_processor['@EcoinventFilename']=base.get('@EcoinventFilename')
+    bare_processor['@EcoinventFilename']=base_copied.get('@EcoinventFilename')
     bare_processor['@EcoinventCarrierName']=base.get('@EcoinventCarrierName')
 
     # Get the names from the inventories
@@ -224,14 +280,14 @@ def Nis_generator(path: str) -> csv:
     for file in files:
         file_path=str(file)
         num_spore=file_path.split('_')[-1].split('.')[0]
-        print(num_spore)
+
 
         # Modify the background of the database
         # We still want to replace the market for electricity
 
         ModifyBackground(file_path,market_for_electricity)
 
-        print(base.head())
+
 
         #create an excel sheet for the spore
         sheet_name = f"Spore_{num_spore}"
@@ -245,6 +301,7 @@ def Nis_generator(path: str) -> csv:
             inventory=export_solved_inventory(activity,method)
             #Assign columns
             inventory['Processor'] = row['Processor']
+            inventory['unit']=''
 
             inventory['method'] = method[-1]
             has_float_values = inventory['categories'].dtype == float and nis['categories'].apply(
@@ -255,14 +312,12 @@ def Nis_generator(path: str) -> csv:
             print(inventory['categories'][0], list_types)
 
             nis=pd.concat([nis,inventory],axis=0)
-            print(nis.head())
+
 
         # Adjust the Interface values to the expected input of enbios
-
-
         nis['categories'] = [ast.literal_eval(element) for element in nis['categories']]
         nis['categories'] = ['_'.join(element).replace(' ', '_').replace('-', '_') for element in nis['categories']]
-
+        pass
         # Create an "Unspecified"
         interfaces=[]
         for name,category in zip(nis['name'],nis['categories']):
@@ -273,6 +328,7 @@ def Nis_generator(path: str) -> csv:
             if name_check.isnumeric():
                 # If starts with a number, add a "_" in front of the sting
                 name='_'+name
+                #interfaces.append(name)
 
             if count <1:
                 category=str(category)+'_unspecified'
@@ -283,67 +339,116 @@ def Nis_generator(path: str) -> csv:
                 interfaces.append(cat)
 
         nis['Interface']=interfaces
-        nis['Interface'] = [element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['Interface']]
+        nis['Interface'] = nis['Interface'].apply(str_cleaner) #lo deja vacio
         nis['Orientation']='Input' # as default
         nis['Compartment']=[compartment.split('_')[0] for compartment in nis['categories']]
-        nis['ref_prod']=[element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_') for element in nis['ref_prod']]
+        nis['ref_prod']=[element.replace(' ', '_').replace(',', '_').replace('>', '_').replace('<', '_').replace('-', '_').replace('+','_').replace('/','_').replace('.','_').replace('(','_').replace(')','_') for element in nis['ref_product']]
 
+        pass
+        # Create starter rows
+        previous=None
+        nis.reset_index(inplace=True, drop=True)
 
-        previous_prod=None
-        previous_processor=None
         for index,row  in nis.iterrows():
-            if row['ref_product'] != previous:
+            if row['act_name'] != previous:
+
                 new_row=pd.Series('',index=nis.columns)
-                new_row['Processor']=nis.iloc[index + 1]['Processor'] #value of the next row
+                #act_name=str(row['act_name']).replace(' ','_').replace(',','_').replace('-','_')
+                processor=str(nis.iloc[index + 1]['act_name']).replace(' ','_').replace(',','_').replace('-','_').replace('(','_').replace(')','_') #value of the next row
+                new_row['act_name']=processor
                 new_row['ref_prod']=(row['ref_product'])
                 new_row['amount']= 1
                 new_row['Orientation']='Output'
+
+
+                new_row['name']=(str(row['ref_product'])).replace(',','_').replace(' ','_')
                 nis = nis.iloc[:index].append(new_row, ignore_index=True).append(nis.iloc[index:], ignore_index=True)
-            break
-            previous = row['ref_product']
-            previous_processor
+            else:
+                pass
+            previous= row['act_name']
+
 
 
         # Finally, use the structure of an original NIS file
         # Include the generated columns in the nis file
         Interface_nis=interface_columns()
+
         # Copy and move columns
         Interface_nis['Interface']=nis.get('Interface')
         Interface_nis['Orientation']=nis.get('Orientation')
-        Interface_nis['I@compartmen']=nis.get('Compartment')
-        Interface_nis['Value']=nis.get('Amount')
-        Interface_nis['Processor'] = [element.replace(' ', '_').replace(',', '_').replace('-', '_') for element in nis['act_name']]
-        Interface_nis['RelativeTo']=[element.replace(' ', '_').replace(',', '_').replace('-', '_') for element in nis['ref_product']]
-        #TODO : Interface types. Follow from here
-        #Interface_nis['InterfaceType']
+
+        Interface_nis['I@compartment']=nis.get('Compartment')
+        Interface_nis['I@subcompartment'] = nis.get('categories')
+        pass
+
+        Interface_nis["I@subcompartment"]=Interface_nis["I@subcompartment"].str.split('_').str[1:].str.join(' ')
+        pass
+        Interface_nis["Value"]=nis.get('amount')
+        Interface_nis['Processor'] = [element.replace(' ', '_').replace(',', '_').replace('-', '_').replace('/','_').replace('.','_').replace('(','_').replace(')','_') for element in nis['act_name']]
+        Interface_nis['RelativeTo']=[element.replace(' ', '_').replace(',', '_').replace('-', '_').replace('/','_').replace('.','_').replace('(','_').replace(')','_') for element in nis['ref_product']]
+        Interface_nis['InterfaceType']=(nis.get('name'))
+        # Apply the same methodology. If the interface type starts with a number, add an '_' in front
+
+
+        Interface_nis['InterfaceType']=Interface_nis['InterfaceType'].apply(str_cleaner)
+        Interface_nis['InterfaceType'] = Interface_nis['InterfaceType'].apply(num_cleaner)
+        Interface_nis['Time']='Year'
+
+
+        col_order = ["Processor",
+                "InterfaceType",
+                "Interface",
+                "Sphere",
+                "RoegenType",
+                "Orientation",
+                "OppositeSubsystemType",
+                "GeolocationRef",
+                "GeolocationCode2",
+                "I@compartment",
+                "I@subcompartment",
+                "Value",
+                "Unit",
+                "RelativeTo",
+                "Uncertainty",
+                "Assessment",
+                "PedigreeMatrix",
+                "Pedigree",
+                "Time",
+                "Source",
+                "NumberAttributes",
+                "Comments"]
+        Interface_nis=Interface_nis.reindex(columns=col_order)
+        pass
 
 
 
-
-
+        pass
 
         final_path = path +'/'+'Nis_'+sheet_name+'.xlsx'
 
+
+
         # Create an excel file containing 2 sheets:
         writer=pd.ExcelWriter(final_path,engine='xlsxwriter', options={'strings_to_numbers':True})
+        InterfaceTypeDoc = interfaceTypeSheet()
+        InterfaceTypeDoc.to_excel(writer, sheet_name='InterfaceTypes', index=False)
         bare_processor = generate_bare_processor(BASE_DATA_PATH)
         bare_processor.to_excel(writer,sheet_name='BareProcessors',index=False)
-        nis.to_excel(writer,sheet_name='Interfaces', index=False)
-        Interface_nis.to_excel(writer,sheet_name='Test',index=False)
+        #nis.to_excel(writer,sheet_name='Interfaces_test', index=False)
+        Interface_nis.to_excel(writer,sheet_name='Interfaces',index=False)
+
+        #Create the  InterfaceType sheet
+
+
         writer.save()
         writer.close()
         final_path_csv=path +'/'+'Nis_'+sheet_name+'.csv'
-
-
         nis.to_csv(final_path_csv, sep=',', index=False)
-
-
-
-
+pass
 
 ########################################################Supplemetary
-
 
 if __name__=='__main__':
     Nis_generator(BASE_DATA_PATH)
 
+pass
