@@ -5,6 +5,8 @@ from ENBIOS2_Complements.data_for_enbios.const import data_path
 import bw2data as bd
 from pathlib import Path
 from tqdm import tqdm
+import random
+
 
 
 """
@@ -17,8 +19,8 @@ Works with bw2data -4.0.dev18. Fails with the latest version due to some errors 
 processors_path=data_path / 'base_file_simplified.xlsx'
 calliope=data_path / 'csv2_modified.csv'
 dict_path=data_path /'dict.json'
-
-
+flow_out_path=data_path / 'flow_out_sum_modified.csv'
+save_in= data_path / 'calliope_function_intermediate.csv'
 
 # Select bw project and db
 
@@ -91,7 +93,7 @@ def modify_data(calliope_data : Path, gen_dict: dict):
             continue
     df['names2'] = name2
 
-    save_in=data_path / 'calliope_function.csv'
+
 
     df['new_vals']=None
     df['Units_new']=None
@@ -99,28 +101,31 @@ def modify_data(calliope_data : Path, gen_dict: dict):
 
     df['flow_out_sum']=[x.replace(',','.') for x in df['flow_out_sum']]
 
-
+    df['codes']=None
+    df['names_db']=None
     for key in tqdm(gen_dict.keys()):
         code=gen_dict[key]['code']
-
         pass
         try:
             activity=database.get(code)
             unit = activity['unit']
+            act_name=activity['name']
 
         except bw2data.errors.UnknownObject:
             print(code, 'from activity', key, 'not found')
             unit="none"
+
+
 
         for index,row in df.iterrows():
             if str(key)==str(row['names2']):
                 factor=(gen_dict[key]['factor'])
                 value=float(row['flow_out_sum'])
                 new_val=value*factor
-
-
+                df.at[index,'codes']=code
                 df.at[index,'units']=unit
                 df.at[index,'new_vals']=new_val
+                df.at[index,'names_db']=act_name
 
 
                 # Here is the conversion
@@ -133,12 +138,19 @@ def modify_data(calliope_data : Path, gen_dict: dict):
     df.to_csv(save_in, index=False)
 
     # Prepare an enbios-like file
-    cols=['spores','techs','carriers','units','new_vals']
+    cols=['spores','locs','techs','carriers','units','new_vals']
     df=df[cols]
     df.rename(columns={'spores':'scenarios','new_vals':'flow_out_sum'},inplace=True)
 
     #new_file name
-    flow_out_path=data_path / 'flow_out_sum_modifified.csv'
+    # Enbios is throwing some errors due to some empty cells:
+    # scenarios -> 0 -> activities -> electrolysis_hydrogen__PRT_1 -> magnitude
+    #   value is not a valid float (type=type_error.float)
+    # Delete the empty rows to get a first insight of enbios
+    # TODO: review
+    df.dropna(axis=0, inplace=True)
+
+
 
     df.to_csv(flow_out_path,index=False)
 
@@ -161,8 +173,27 @@ def check_elements(dictionary, lst):
 
     return present_names, absent_names
 
+def check_units(csv_path):
+    """
+    Assert if the units included in the csv file are the ones included in the DB
+    """
+    df=pd.read_csv(csv_path,delimiter=',')
+    random_rows=df.sample(n=1000)
+    for index,row in random_rows.iterrows():
+        code=str(row['codes'])
+        try:
+            act=database.get(code)
+        except bd.errors.UnknownObject:
+            continue
+        unit_df=str(row['units'])
+        unit_check=act['unit']
+        assert str(unit_df) == unit_check, "Not true"
+        print(unit_df,unit_check)
 
 
+
+
+    pass
 
 
 if __name__=='__main__':
@@ -170,7 +201,7 @@ if __name__=='__main__':
     a=data_merge(processors_path)           # Generate the dictionary
     names=modify_data(calliope, a)          # Generate the new csv
     present,absent=check_elements(a,names)  # check missing techs
-
+    check_units(save_in)
 #present,absent=check_elements(a,list1)
 
 

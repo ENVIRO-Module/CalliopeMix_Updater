@@ -2,14 +2,16 @@
 This function read the flow_out_sum and splits the data into X csv files, one per each spore.
 """
 from pathlib import Path
-
-from Utils_seeds.const.const import BASE_DATA_PATH, PROJECT_PATH
+from const.const import BASE_DATA_PATH,PROJECT_PATH
 import pandas as pd
 import json
 
 
 output_path: Path= PROJECT_PATH / 'Outputs/spores'
+
+
 print(output_path)
+
 def split_spores(path):
     with open(path) as file:
         data=json.load(file)
@@ -39,6 +41,5 @@ def split_spores(path):
 
 
 if __name__=='__main__':
-
     df=split_spores(BASE_DATA_PATH)
 pass

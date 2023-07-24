@@ -3,10 +3,23 @@ import time
 import json
 import os
 
+from const.const import BASE_DATA_PATH,DATA
+
+
+
+json_base=BASE_DATA_PATH
+
+
+
 def export_constant(json_file):
+
     """
-    This functions returns a file with a list of the existing technologies in the electricity mix
-    It reads the electricity.csv file, a "default file" that the user has to create to include the new activities there
+    -Entry point. Define a schema of the future electricity mix in an excel following the structure of the ('Create activity).
+        -An example can be found in /Data/electricity.csv.
+
+    This function:
+        -Reads the csv file
+        -Returns a file with a list of the existing technologies from the electricity mix
 
 
     :param json: base json file with paths and links
@@ -30,7 +43,7 @@ def export_constant(json_file):
     for _,element in df.iterrows():
         instance=isinstance(element['Amount'], float)
         if instance is True:
-            print('element not equal to NA is', element['Amount'])
+            #print('element not equal to NA is', element['Amount'])
             technology = element['Activity name']
             constant.append(technology)
         else:
@@ -39,16 +52,19 @@ def export_constant(json_file):
     with open(output_path, 'w') as file:
         file.write('constant =' + const_to_write)
 
+    print('File of constant saved in', output_path)
+
     return constant
 
 
 
 def energyMixer(json_path):
     """
+    This function creates multiple csv files following the structure of the excel importer ( Create activity)
+    It creates one per each scenario / spore, so each scenario has his own inventory of the future market for electricity
 
     :param json_path: path of the general json
     :return: Returns as much csv as spores, containing the electricity mix of each of them.
-    These csv follow the general structure of the inventory form excel function
 
     """
 
@@ -57,16 +73,20 @@ def energyMixer(json_path):
 
     data = file['caliope_file']
     constant=export_constant(json_path)
-    output_path=file["csv_electricty_mix"]
+    output_path=str(DATA / 'Outputs')
+    print(output_path)
+    #output_path=file["csv_electricty_mix"]
 
 
     starter_time = time.time()
+
     df_spores = pd.read_csv(data, delimiter=',')
     # Drop Nnn values
     df_spores = df_spores.dropna(subset=['flow_out_sum'])
 
     # Filter technologies --> output from Electricity_mix_filter.py
     df_spores = df_spores[df_spores['techs'].isin(constant)]
+    # TODO: We're assuming electricity and waste as the only carriers for the market for electricity
     df_spores = df_spores[(df_spores['carriers'] == 'electricity') | (df_spores['carriers'] == 'waste')]
 
     # Group values
@@ -91,8 +111,10 @@ def energyMixer(json_path):
         mix.to_csv(name_mix, sep=';', index=False)
     final=time.time()
     print('Output generated in {:.2f} seconds'.format(final-starter_time))
+    print('Multiple files saved in',output_path)
 
 
 if __name__=='__main__':
-    export_constant(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')
-    energyMixer(r'C:\Users\altz7\PycharmProjects\p3\Utils_seeds\general.json')
+    export_constant(json_base)
+    energyMixer(json_base)
+pass
